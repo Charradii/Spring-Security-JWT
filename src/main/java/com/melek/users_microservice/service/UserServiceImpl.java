@@ -1,55 +1,50 @@
 package com.melek.users_microservice.service;
 
-import com.melek.users_microservice.Repos.RoleRepository;
-import com.melek.users_microservice.Repos.UserRepository;
+import javax.transaction.Transactional;
+
 import com.melek.users_microservice.entities.Role;
-import com.melek.users_microservice.entities.user;
+import com.melek.users_microservice.entities.User;
+import com.melek.users_microservice.repos.RoleRepository;
+import com.melek.users_microservice.repos.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
-
-
-@RequiredArgsConstructor 
 @Transactional
 @Service
 public class UserServiceImpl implements UserService{
 
-    
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    UserRepository userRep;
-
-    @Autowired
-    RoleRepository roleRep;
-
     @Override
-    public user saveUser(user user) {
+    public User saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userRep.save(user);
+        return userRepository.save(user);
     }
 
     @Override
-    public user findByUsername(String username) {
-        return userRep.findByUsername(username);
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public Role addRole(Role role) {
-        return roleRep.save(role);
+        
+        return roleRepository.save(role);
     }
 
     @Override
-    public user addRoleToUser(String username, String rolename) {
-        user usr = userRep.findByUsername(username);
-        Role role = roleRep.findByRole(rolename);
-        usr.getRoles().add(role);
-        //userRepository.save(usr)
-        return usr;
+    public User addRoleToUser(String username, String rolename) {
+        User u = userRepository.findByUsername(username);
+        u.getRoles().add(roleRepository.findByRole(rolename));
+        return u;
     }
+    
 }

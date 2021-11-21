@@ -1,12 +1,9 @@
-package com.melek.users_microservice.Repos;
+package com.melek.users_microservice.repos;
+
+import com.melek.users_microservice.entities.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
-import com.melek.users_microservice.entities.user;
-
-
-public interface UserRepository extends JpaRepository<user , Long> {
-    user findByUsername(String name);
-    
+public interface UserRepository extends JpaRepository<User, Long>{
+    User findByUsername(String username);
 }

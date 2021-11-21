@@ -1,11 +1,13 @@
 package com.melek.users_microservice.service;
 
 import com.melek.users_microservice.entities.Role;
-import com.melek.users_microservice.entities.user;
+import com.melek.users_microservice.entities.User;
+
+
 
 public interface UserService {
-    user saveUser(user user);
-    user findByUsername (String username);
+    User saveUser(User user);
+    User findUserByUsername(String username);
     Role addRole(Role role);
-    user addRoleToUser(String username, String rolename);
+    User addRoleToUser(String username, String rolename);
 }

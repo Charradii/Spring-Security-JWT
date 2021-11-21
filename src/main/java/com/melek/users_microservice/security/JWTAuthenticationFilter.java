@@ -15,7 +15,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.melek.users_microservice.entities.user;
+import com.melek.users_microservice.entities.User;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,45 +24,45 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
-    private AuthenticationManager a;
+    private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         super();
-        this.a = a;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        user user = null;
+        User user=null;
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(), user.class);
+            user = new ObjectMapper().readValue(request.getInputStream(), User.class);
         } catch (JsonParseException e) {
+            
             e.printStackTrace();
         } catch (JsonMappingException e) {
-
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return a.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
-        
-        org.springframework.security.core.userdetails.User springUser = 
-        (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
+        org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
         List<String> roles = new ArrayList<>();
-        springUser.getAuthorities().forEach(au ->{
+        springUser.getAuthorities().forEach(au -> {
             roles.add(au.getAuthority());
         });
 
-        String jwt = JWT.create().withSubject(springUser.getUsername()).
-                                    withArrayClaim("roles",roles.toArray(new String[roles.size()])).withExpiresAt(new Date(System.currentTimeMillis()+10*24*60*60*1000)).
-                                    sign(Algorithm.HMAC256("melekcharradii@gmail.Com"));
-        response.addHeader("authorization", jwt);
+        String jwt = JWT.create()
+                                .withSubject(springUser.getUsername())
+                                .withArrayClaim("roles", roles.toArray(new String[roles.size()]))
+                                .withExpiresAt(new Date(System.currentTimeMillis()+10*24*60*60*1000))
+                                .sign(Algorithm.HMAC256("melekcharradii@gmail.Com"));
+        response.addHeader("Authorization", jwt);
     }
     
     
