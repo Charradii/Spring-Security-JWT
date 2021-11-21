@@ -1,5 +1,7 @@
 package com.melek.users_microservice.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import com.melek.users_microservice.entities.Role;
@@ -46,5 +48,11 @@ public class UserServiceImpl implements UserService{
         u.getRoles().add(roleRepository.findByRole(rolename));
         return u;
     }
+
+    @Override
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+    
     
 }

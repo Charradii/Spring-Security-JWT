@@ -25,7 +25,6 @@ public class UsersMicroserviceApplication {
 	@PostConstruct
 	void init_users(){
 		
-		userService.addRoleToUser("melekmelek", "test");
 	}
 	@Bean
 	BCryptPasswordEncoder getBCE(){
